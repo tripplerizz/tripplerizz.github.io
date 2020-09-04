@@ -7,6 +7,15 @@
     padding-left: 10%;
 }
 
+#site-title {
+    text-align: center;
+}
+
+#photo-card {
+    margin-left: 5%;
+}
+
 #resume {
     padding-left: 10px;
+    color: black;
 }
