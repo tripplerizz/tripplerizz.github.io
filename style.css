@@ -3,10 +3,8 @@
     height: auto;
 }
 
-.bg {
-    background-image: url("./Tenessee.jpg");
-    background-size: 100%;
-    background-repeat: no-repeat;
+.card {
+    margin-top: 5%;
 }
 
 #panel {
@@ -24,5 +22,5 @@
 
 #resume {
     padding-left: 10px;
-    color: black;
+    color: white;
 }
