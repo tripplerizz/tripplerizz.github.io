@@ -3,8 +3,14 @@
     height: auto;
 }
 
-.head_shot {
-    padding-left: 10%;
+.bg {
+    background-image: url("./Tenessee.jpg");
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+
+#panel {
+    opacity: 0;
 }
 
 #site-title {
@@ -13,6 +19,7 @@
 
 #photo-card {
     margin-left: 5%;
+    margin-right: 5%;
 }
 
 #resume {
