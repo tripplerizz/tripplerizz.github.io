@@ -1,0 +1,301 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flashcard System</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .flashcard-container {
+            width: 500px;
+            height: 300px;
+            perspective: 1000px;
+            margin-bottom: 20px;
+        }
+
+        .flashcard {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .question {
+            background-color: #ffffff;
+        }
+
+        .answer {
+            background-color: #e8f4f8;
+            transform: rotateY(180deg);
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .counter {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="flashcard-container">
+        <div class="flashcard" id="flashcard">
+            <div class="card-face question" id="question"></div>
+            <div class="card-face answer" id="answer"></div>
+        </div>
+    </div>
+    <div class="controls">
+        <button id="prevBtn">Previous</button>
+        <button id="flipBtn">Flip</button>
+        <button id="nextBtn">Next</button>
+    </div>
+    <div class="counter" id="counter"></div>
+
+    <script>
+        // Flashcard data
+        const flashcardData = [
+            // ... (rest of your JSON array)
+  {
+    "question": "What is a scientific theory?",
+    "answer": "A scientific theory is the culmination of many scientific investigations drawing together all the current evidence concerning a substantial range of phenomena; thus, a scientific theory represents the most powerful explanation scientists have to offer."
+  },
+  {
+    "question": "Do theories become laws, or do laws become theories?",
+    "answer": "Theories do not become laws, nor do laws become theories; theories are well-supported explanations and laws are well-supported descriptions."
+  },
+  {
+    "question": "What is the purpose of an experiment?",
+    "answer": "To test a hypothesis."
+  },
+  {
+    "question": "Is \"The keychain is yellow\" an inference or observation?",
+    "answer": "Observation. It is a matter-of-fact statement that was made using one of the five senses."
+  },
+  {
+    "question": "Is \"Hannah's favorite color is yellow because her keychain is yellow\" an inference or an observation?",
+    "answer": "Inference. It is a conclusion drawn from an observation."
+  },
+  {
+    "question": "What is the independent variable in Fredrick's rose experiment?",
+    "answer": "The type of soil used."
+  },
+  {
+    "question": "What is the dependent variable in Fredrick's rose experiment?",
+    "answer": "The height of the plant and number of leaves."
+  },
+  {
+    "question": "What is the control group in Fredrick's rose experiment?",
+    "answer": "Soil from Frederick's rose garden."
+  },
+  {
+    "question": "What is the purpose of using scientific models?",
+    "answer": "Helps scientists visualize, represent, or explain natural phenomena."
+  },
+  {
+    "question": "What are the eight characteristics of life?",
+    "answer": "Cells are the basic unit of life, growth and development, genetic code, use and obtain energy, reproduction, response to stimuli, homeostasis, and adaptation through evolution."
+  },
+  {
+    "question": "Are viruses living or non-living?",
+    "answer": "Non-living. They cannot reproduce on their own, need a host to obtain energy, and have no cells."
+  },
+  {
+    "question": "What is primary succession?",
+    "answer": "Landscape develops on bare rock (no pre-existing soil)."
+  },
+  {
+    "question": "What is secondary succession?",
+    "answer": "Landscape develops on no pre-existing soil after a disturbance."
+  },
+  {
+    "question": "What is the 10% rule?",
+    "answer": "Only 10% of energy moves up to the next trophic level."
+  },
+  {
+    "question": "What does it mean when water molecules are described as \"polar\"?",
+    "answer": "Have opposite charges in two different regions of the molecule."
+  },
+  {
+    "question": "What kind of chemical bonds are inside a molecule of water?",
+    "answer": "Covalent bonds."
+  },
+  {
+    "question": "What kind of chemical bonds link molecules of water to other molecules of water?",
+    "answer": "Hydrogen bonds."
+  },
+  {
+    "question": "What type of instrument do scientists use to study cells?",
+    "answer": "Microscopes."
+  },
+  {
+    "question": "Are animal and plant cells eukaryotic or prokaryotic?",
+    "answer": "Eukaryotic."
+  },
+  {
+    "question": "What happens to the movement of molecules when the concentration of molecules inside and outside a membrane is the same?",
+    "answer": "Water moves into and out of the cell at an equal rate. There is no longer any NET movement of water in one direction, water moves towards both directions equally."
+  },
+  {
+    "question": "What happens to an animal cell (such as a red blood cell) when it is in a hypotonic solution?",
+    "answer": "Water moves into the cell, which swells and bursts."
+  },
+  {
+    "question": "What organelle does the aerobic portion of cellular respiration occur in?",
+    "answer": "The mitochondria."
+  },
+  {
+    "question": "What organelle does photosynthesis occur in?",
+    "answer": "Chloroplasts."
+  },
+  {
+    "question": "What is the difference between ATP and ADP molecules?",
+    "answer": "ATP has three phosphate groups and is higher energy than an ADP molecule. ADP has two phosphates and is lower energy than an ATP molecule."
+  },
+  {
+    "question": "List the steps of cellular respiration in order.",
+    "answer": "Glycolysis ---> Krebs cycle ---> Electron transport chain"
+  },
+  {
+    "question": "How many ATP molecules are produced from 1 molecule of glucose during cellular respiration?",
+    "answer": "38 ATP molecules."
+  },
+  {
+    "question": "Does cellular respiration occur in all cells?",
+    "answer": "Yes, even bacteria (they just do not use a mitochondria)."
+  },
+  {
+    "question": "What happens when chlorophyll is struck by sunlight?",
+    "answer": "The electrons in the chlorophyll become energized and absorb the sunlight."
+  },
+  {
+    "question": "How are photosynthesis and cellular respiration connected?",
+    "answer": "The formulas for the reactions are inverse. The reactants for photosynthesis are the products for cellular respiration, and vice versa."
+  },
+  {
+    "question": "Which steps of cellular respiration are aerobic, and which are anaerobic?",
+    "answer": "Glycolysis is anaerobic. Krebs cycle and ETC are aerobic. Fermentation is anaerobic."
+  },
+  {
+    "question": "What is an autotroph?",
+    "answer": "Organisms such as plants that make their food through processes such as photosynthesis."
+  },
+  {
+    "question": "What is a heterotroph?",
+    "answer": "Organisms such as humans that must consume other organisms as food."
+  }
+        ];
+
+        // DOM elements
+        const flashcard = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const flipBtn = document.getElementById('flipBtn');
+        const counterElement = document.getElementById('counter');
+
+        // State
+        let currentCardIndex = 0;
+        let isFlipped = false;
+
+        // Functions
+        function updateCard() {
+            const currentCard = flashcardData[currentCardIndex];
+            questionElement.textContent = currentCard.question;
+            answerElement.textContent = currentCard.answer;
+            counterElement.textContent = `Card ${currentCardIndex + 1} of ${flashcardData.length}`;
+        }
+
+        function flipCard() {
+            isFlipped = !isFlipped;
+            flashcard.classList.toggle('flipped');
+        }
+
+        function nextCard() {
+            if (currentCardIndex < flashcardData.length - 1) {
+                currentCardIndex++;
+                if (isFlipped) {
+                    flipCard();
+                }
+                updateCard();
+            }
+        }
+
+        function prevCard() {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                if (isFlipped) {
+                    flipCard();
+                }
+                updateCard();
+            }
+        }
+
+        // Event listeners
+        flashcard.addEventListener('click', flipCard);
+        flipBtn.addEventListener('click', flipCard);
+        nextBtn.addEventListener('click', nextCard);
+        prevBtn.addEventListener('click', prevCard);
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextCard();
+            if (e.key === 'ArrowLeft') prevCard();
+            if (e.key === ' ') flipCard();
+        });
+
+        // Initialize
+        updateCard();
+    </script>
+</body>
+</html>
